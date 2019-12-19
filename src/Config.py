@@ -35,25 +35,29 @@ DISPLAY_CONF = {
         BLACK: '\u265F',
         WHITE: '\u2659'
     },
-    Rook : {
+    Rook: {
         BLACK: '\u265C',
         WHITE: '\u2656'
     },
-    Knight : {
-        BLACK : '\u265E',
-        WHITE : '\u2658'
+    Knight: {
+        BLACK: '\u265E',
+        WHITE:  '\u2658'
     },
-    Bishop : {
-        BLACK : '\u265D',
-        WHITE : '\u2657'
+    Bishop: {
+        BLACK: '\u265D',
+        WHITE: '\u2657'
     },
-    Queen : {
-        BLACK : '\u265B',
-        WHITE : '\u2655'
+    Queen: {
+        BLACK: '\u265B',
+        WHITE: '\u2655'
     },
-    King : {
-        BLACK : '\u265A',
-        WHITE : '\u2654'
+    King: {
+        BLACK: '\u265A',
+        WHITE: '\u2654'
+    },
+    "Square": {
+        BLACK: " ",
+        WHITE: " "
     }
  }   
     
