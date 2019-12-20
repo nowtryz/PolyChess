@@ -18,7 +18,7 @@ wk='\u2654'
 
 """
 
-from config.pieces import Pawn, Rook, Knight, Bishop, Queen, King
+from pieces import Pawn, Rook, Knight, Bishop, Queen, King
 # ...
 
 # colors

@@ -1,5 +1,6 @@
 class Piece:
-    def __init__(self, position, color, character):
+    def __init__(self, board, position, color, character):
+        self.board = board
         self.alive = True
         self.position = position
         self.color = color
@@ -12,28 +13,38 @@ class Piece:
         pass
 
     def die(self):
-        pass
+        self.board.piece_died(self)
+        self.alive = False
+
+    def __repr__(self):
+        return self.character
 
 
 class Pawn(Piece):
-    pass
+    def __init__(self, board, position, color, character):
+        super().__init__(board, position, color, character)
 
 
 class Knight(Piece):
-    pass
+    def __init__(self, board, position, color, character):
+        super().__init__(board, position, color, character)
 
 
 class Bishop(Piece):
-    pass
+    def __init__(self, board, position, color, character):
+        super().__init__(board, position, color, character)
 
 
 class Rook(Piece):
-    pass
+    def __init__(self, board, position, color, character):
+        super().__init__(board, position, color, character)
 
 
 class Queen(Piece):
-    pass
+    def __init__(self, board, position, color, character):
+        super().__init__(board, position, color, character)
 
 
 class King(Piece):
-    pass
+    def __init__(self, board, position, color, character):
+        super().__init__(board, position, color, character)
