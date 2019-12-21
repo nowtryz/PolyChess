@@ -1,7 +1,11 @@
 PolyChess
 =========
 
-A chess game in Python
+A chess game in Python as part of a project management course.
+
+## Road map
+
+A road map is available on [Trello](https://trello.com/b/OtqxmBID/polychess).
 
 ## Getting Started
 
