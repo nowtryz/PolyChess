@@ -1,3 +1,5 @@
+from typing import Dict, List, Any
+
 import numpy as np
 
 from colors import WHITE, BLACK
@@ -18,22 +20,19 @@ class Board:
 
         self.grid = np.empty((8, 8), dtype=Piece)
         """Matrix containing the boxes of the board and the piece for each of them"""
-        self.living_pieces = {
+        self.living_pieces: Dict[Any, List[Piece]] = {
             BLACK: [],
             WHITE: []
         }
         """A dict of living pieces, subscript with either BLACK or WHITE to get alive pieces of the specified color"""
-        self.dead_pieces = {
+        self.dead_pieces: Dict[Any, List[Piece]] = {
             BLACK: [],
             WHITE: []
         }
         """A dict of dead pieces, subscript with either BLACK or WHITE to get dead pieces of the specified color"""
         self.check = None
         """The color in check, None if neither are check"""
-        self.kings = {
-            BLACK: None,
-            WHITE: None
-        }
+        self.kings: Dict[Any, Piece] = {}
         """A dict containing the king of each color"""
         self._place_pieces()
 
