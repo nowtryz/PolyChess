@@ -1,6 +1,7 @@
 import numpy as np
 
-from Config import WHITE, BLACK, DISPLAY_CONF
+from colors import WHITE, BLACK
+from Config import DISPLAY_CONF
 from pieces import Piece, Pawn, Rook, Bishop, Knight, Queen, King
 
 
@@ -12,18 +13,28 @@ class Board:
     def __init__(self):
         """
         Initialize the class
+
         """
 
         self.grid = np.empty((8, 8), dtype=Piece)
+        """Matrix containing the boxes of the board and the piece for each of them"""
         self.living_pieces = {
             BLACK: [],
             WHITE: []
         }
+        """A dict of living pieces, subscript with either BLACK or WHITE to get alive pieces of the specified color"""
         self.dead_pieces = {
             BLACK: [],
             WHITE: []
         }
-        self.kings = {}
+        """A dict of dead pieces, subscript with either BLACK or WHITE to get dead pieces of the specified color"""
+        self.check = None
+        """The color in check, None if neither are check"""
+        self.kings = {
+            BLACK: None,
+            WHITE: None
+        }
+        """A dict containing the king of each color"""
         self._place_pieces()
 
     def _place_pieces(self):
@@ -90,3 +101,4 @@ class Board:
             self.grid[new_position].die()
         self.grid[piece.position] = None
         self.grid[new_position] = piece
+        piece.position = new_position

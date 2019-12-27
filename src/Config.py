@@ -19,16 +19,7 @@ wk='\u2654'
 """
 
 from pieces import Pawn, Rook, Knight, Bishop, Queen, King
-# ...
-
-# colors
-BLACK = (100, 100, 100)
-WHITE = (255, 255, 255)
-
-# constants for each display_conf entry
-CHAR = 0
-COLOR = 1
-
+from colors import BLACK, WHITE
 
 DISPLAY_CONF = {
     Pawn: {
@@ -59,13 +50,12 @@ DISPLAY_CONF = {
         BLACK: " ",
         WHITE: " "
     }
- }   
-    
-    
-    
-    
-    
-    
-    
-    
-    
+ }
+
+
+
+
+
+
+
+
