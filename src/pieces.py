@@ -200,6 +200,10 @@ class King(Piece):
         return self._clear_invalid_moves(moves)
 
     def move_to(self, position):
+        """
+        Overrides default `move_to` to handle castling
+        :param position: the new position
+        """
         # For Castling
         if self.moves == 0 and position[0] == self.row:
             if position[1] == 6:
