@@ -12,12 +12,14 @@ class Board:
     The class manage piece positions, alive pieces and dead ones.
     """
 
-    def __init__(self):
+    def __init__(self, game):
         """
         Initialize the class
 
         """
 
+        self.game = game
+        """Game instance"""
         self.grid = np.empty((8, 8), dtype=Piece)
         """Matrix containing the boxes of the board and the piece for each of them"""
         self.living_pieces: Dict[Any, List[Piece]] = {
