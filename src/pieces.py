@@ -107,13 +107,33 @@ class Piece:
         return WHITE
 
 
+class StraightMover(Piece):
+    def _clear_invalid_directional_moves(self, directions):
+        moves = []
+        for direction in directions:
+            for pos in direction:
+                if self.board.grid[pos]:
+                    if self.board.grid[pos].color != self.color:
+                        moves.append(pos)
+                    break
+                moves.append(pos)
+        # Here moves are already clean, so there is no need to call Piece._clear_invalid_moves
+        return moves
+
+    def _get_directions(self):
+        raise NotImplementedError()
+
+    def all_moves(self):
+        return sum(self._get_directions())
+
+    def legal_moves(self):
+        return self._clear_invalid_directional_moves(self._get_directions())
+
+
 class Pawn(Piece):
     """
     The pawn piece
     """
-
-    def __init__(self, board, position, color, character):
-        super().__init__(board, position, color, character)
 
     def legal_moves(self):
         return []
@@ -124,67 +144,42 @@ class Knight(Piece):
     The knight piece
     """
 
-    def __init__(self, board, position, color, character):
-        super().__init__(board, position, color, character)
-
     def legal_moves(self):
         return []
 
 
-class Bishop(Piece):
+class Bishop(StraightMover):
     """
     The bishop piece
     """
 
-    def __init__(self, board, position, color, character):
-        super().__init__(board, position, color, character)
-
-    def all_moves(self):
-        moves = []
-        moves += zip(reversed(range(0, self.row)), reversed(range(0, self.col)))
-        moves += zip(reversed(range(0, self.row)), range(self.col + 1, 8))
-        moves += zip(range(self.row + 1, 8), range(self.col + 1, 8))
-        moves += zip(range(self.row + 1, 8), reversed(range(0, self.col)))
-        return moves
-
-    def legal_moves(self):
-        moves = []
-        top_left = zip(reversed(range(0, self.row)), reversed(range(0, self.col)))
-        top_right = zip(reversed(range(0, self.row)), range(self.col + 1, 8))
-        bottom_right = zip(range(self.row + 1, 8), range(self.col + 1, 8))
-        bottom_left = zip(range(self.row + 1, 8), reversed(range(0, self.col)))
-
-        for direction in [top_left, top_right, bottom_right, bottom_left]:
-            for pos in direction:
-                if self.board.grid[pos]:
-                    if self.board.grid[pos].color != self.color:
-                        moves.append(pos)
-                    break
-                moves.append(pos)
-
-        # Here moves are already clean, so there is no need to call Piece._clear_invalid_moves
-        return moves
+    def _get_directions(self):
+        return (
+            zip(reversed(range(0, self.row)), reversed(range(0, self.col))),  # top left
+            zip(reversed(range(0, self.row)), range(self.col + 1, 8)),  # top right
+            zip(range(self.row + 1, 8), range(self.col + 1, 8)),  # bottom right
+            zip(range(self.row + 1, 8), reversed(range(0, self.col))),  # bottom left
+        )
 
 
-class Rook(Piece):
+class Rook(StraightMover):
     """
     The rook piece
     """
 
-    def __init__(self, board, position, color, character):
-        super().__init__(board, position, color, character)
-
-    def legal_moves(self):
-        return []
+    def _get_directions(self):
+        return (
+            [(row, self.col) for row in reversed(range(0, self.row))],  # top
+            [(self.row, col) for col in range(self.col + 1, 8)],  # right
+            [(row, self.col) for row in range(self.row + 1, 8)],  # bottom
+            [(self.row, col) for col in reversed(range(0, self.col))],  # left
+        )
 
 
 class Queen(Piece):
     """
     The queen piece
     """
-
-    def __init__(self, board, position, color, character):
-        super().__init__(board, position, color, character)
 
     def legal_moves(self):
         return []
@@ -194,9 +189,6 @@ class King(Piece):
     """
     The king piece
     """
-
-    def __init__(self, board, position, color, character):
-        super().__init__(board, position, color, character)
 
     def can_castling_short(self):
         """
