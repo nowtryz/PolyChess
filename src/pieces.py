@@ -38,6 +38,15 @@ class Piece:
                     moves.append(pos)
         return moves
 
+    def all_moves(self):
+        """
+        Get technically all coordinates where the piece can play from its current position without removing illegal ones
+        :return: A list of coordinates the piece see
+        :rtype: list of tuple
+        """
+
+        raise NotImplementedError()
+
     def legal_moves(self):
         """
         Get moves where the piece can play
@@ -45,7 +54,7 @@ class Piece:
         :rtype: list of tuple
         """
 
-        raise NotImplementedError()
+        raise self._clear_invalid_moves(self.all_moves())
 
     def can_play_at(self, position: tuple):
         """
@@ -130,8 +139,31 @@ class Bishop(Piece):
     def __init__(self, board, position, color, character):
         super().__init__(board, position, color, character)
 
+    def all_moves(self):
+        moves = []
+        moves += zip(reversed(range(0, self.row)), reversed(range(0, self.col)))
+        moves += zip(reversed(range(0, self.row)), range(self.col + 1, 8))
+        moves += zip(range(self.row + 1, 8), range(self.col + 1, 8))
+        moves += zip(range(self.row + 1, 8), reversed(range(0, self.col)))
+        return moves
+
     def legal_moves(self):
-        return []
+        moves = []
+        top_left = zip(reversed(range(0, self.row)), reversed(range(0, self.col)))
+        top_right = zip(reversed(range(0, self.row)), range(self.col + 1, 8))
+        bottom_right = zip(range(self.row + 1, 8), range(self.col + 1, 8))
+        bottom_left = zip(range(self.row + 1, 8), reversed(range(0, self.col)))
+
+        for direction in [top_left, top_right, bottom_right, bottom_left]:
+            for pos in direction:
+                if self.board.grid[pos]:
+                    if self.board.grid[pos].color != self.color:
+                        moves.append(pos)
+                    break
+                moves.append(pos)
+
+        # Here moves are already clean, so there is no need to call Piece._clear_invalid_moves
+        return moves
 
 
 class Rook(Piece):
@@ -166,7 +198,38 @@ class King(Piece):
     def __init__(self, board, position, color, character):
         super().__init__(board, position, color, character)
 
-    def legal_moves(self):
+    def can_castling_short(self):
+        """
+        Whether or not the king can make a castling short
+        :return: true if it cans, false other wise
+        """
+        rook = self.board.grid[self.row, 7]
+        return (
+            rook is not None
+            and rook.moves == 0
+            and self.board.grid[self.row, 5] is None
+            and self.board.grid[self.row, 6] is None
+            and np.all([not piece.can_play_at((self.row, 5))
+                        for piece in self.board.living_pieces[self.opponent]])
+        )
+
+    def can_castling_long(self):
+        """
+        Whether or not the king can make a castling long
+        :return: true if it cans, false other wise
+        """
+        rook = self.board.grid[self.row, 0]
+        return (
+            rook is not None
+            and rook.moves == 0
+            and self.board.grid[self.row, 1] is None
+            and self.board.grid[self.row, 2] is None
+            and self.board.grid[self.row, 3] is None
+            and np.all([not piece.can_play_at((self.row, 3))
+                        for piece in self.board.living_pieces[self.opponent]])
+        )
+
+    def all_moves(self):
         moves = []
         moves += zip(range(self.row - 1, self.row + 1), [self.col - 1] * 3)
         moves += [(self.row - 1, self.col), (self.row + 1, self.col)]
@@ -174,30 +237,12 @@ class King(Piece):
 
         # For Castling
         if self.moves == 0 and not self.board.check:
-            left_rook = self.board.grid[self.row, 0]
-            right_rook = self.board.grid[self.row, 7]
-
-            if (
-                    left_rook is not None
-                    and left_rook.moves == 0
-                    and self.board.grid[self.row, 1] is None
-                    and self.board.grid[self.row, 2] is None
-                    and self.board.grid[self.row, 3] is None
-                    and np.all([not piece.can_play_at((self.row, 3))
-                                for piece in self.board.living_pieces[self.opponent]])
-            ):
+            if self.can_castling_long():
                 moves.append((self.row, 2))
-            if (
-                    right_rook is not None
-                    and right_rook.moves == 0
-                    and self.board.grid[self.row, 5] is None
-                    and self.board.grid[self.row, 6] is None
-                    and np.all([not piece.can_play_at((self.row, 5))
-                                for piece in self.board.living_pieces[self.opponent]])
-            ):
+            if self.can_castling_short():
                 moves.append((self.row, 6))
 
-        return self._clear_invalid_moves(moves)
+        return moves
 
     def move_to(self, position):
         """
