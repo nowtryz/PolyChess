@@ -47,8 +47,8 @@ DISPLAY_CONF = {
         WHITE: '\u2654'
     },
     "Square": {
-        BLACK: " ",
-        WHITE: " "
+        BLACK: ". ",
+        WHITE: ". "
     }
  }
 
