@@ -176,13 +176,22 @@ class Rook(StraightMover):
         )
 
 
-class Queen(Piece):
+class Queen(StraightMover):
     """
     The queen piece
     """
 
-    def legal_moves(self):
-        return []
+    def _get_directions(self):
+        return (
+            zip(reversed(range(0, self.row)), reversed(range(0, self.col))),  # top left
+            [(row, self.col) for row in reversed(range(0, self.row))],  # top
+            zip(reversed(range(0, self.row)), range(self.col + 1, 8)),  # top right
+            [(self.row, col) for col in range(self.col + 1, 8)],  # right
+            zip(range(self.row + 1, 8), range(self.col + 1, 8)),  # bottom right
+            [(row, self.col) for row in range(self.row + 1, 8)],  # bottom
+            zip(range(self.row + 1, 8), reversed(range(0, self.col))),  # bottom left
+            [(self.row, col) for col in reversed(range(0, self.col))],  # left
+        )
 
 
 class King(Piece):
