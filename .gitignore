@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -73,6 +72,3 @@ out/
 
 # Cursive Clojure plugin
 .idea/replstate.xml
-=======
-**/__pycache__/
->>>>>>> Stashed changes
