@@ -22,6 +22,7 @@ class Piece:
         self.color = color
         self.character = character
         self.moves = 0
+        self.last_move = 0
 
     def _clear_invalid_moves(self, input_moves):
         """
@@ -75,6 +76,7 @@ class Piece:
         """
 
         self.board.move_piece(self, position)
+        self.last_move = self.board.game.turn
         self.moves += 1
 
     def die(self):
@@ -135,8 +137,33 @@ class Pawn(Piece):
     The pawn piece
     """
 
+    def all_moves(self):
+        direction = 1 if self.color == BLACK else -1
+        moves = []
+        # default moves
+        front = (self.row + direction, self.col)
+        if not self.board.grid[front]:
+            moves.append(front)
+            # first move
+            if self.moves == 0 and not self.board.grid[self.row + 2 * direction, self.col]:
+                moves.append((self.row + 2 * direction, self.col))
+        # capture
+        for pos in [(self.row + direction, self.col - 1), (self.row + direction, self.col + 1)]:
+            if 0 <= pos[1] < 8:
+                target = self.board.grid[pos]
+                if target and target.color == self.opponent:
+                    moves.append(pos)
+        # "en passant"
+        for pos in [(self.row, self.col - 1), (self.row, self.col + 1)]:
+            if 0 <= pos[1] < 8:
+                target = self.board.grid[pos]
+                if target and target.color == self.opponent and target.last_move == self.board.game.turn - 1:
+                    moves.append(pos)
+
+        return moves
+
     def legal_moves(self):
-        return []
+        return self.all_moves()
 
 
 class Knight(Piece):
