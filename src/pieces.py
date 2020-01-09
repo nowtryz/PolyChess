@@ -45,7 +45,7 @@ class Piece:
         :return: A list of coordinates the piece see
         :rtype: list of tuple
         """
-
+        
         raise NotImplementedError()
 
     def legal_moves(self):
@@ -55,7 +55,7 @@ class Piece:
         :rtype: list of tuple
         """
 
-        raise self._clear_invalid_moves(self.all_moves())
+        return self._clear_invalid_moves(self.all_moves())
 
     def can_play_at(self, position: tuple):
         """
@@ -193,8 +193,16 @@ class Knight(Piece):
     The knight piece
     """
 
-    def legal_moves(self):
-        return []
+    def all_moves(self):
+        return (((self.row + 2),(self.col + 1)), #1H
+                ((self.row + 1),(self.col + 2)), #2H
+                ((self.row - 1),(self.col + 2)), #4H
+                ((self.row - 2),(self.col + 1)), #5H
+                ((self.row - 2),(self.col - 1)), #7H
+                ((self.row - 1),(self.col - 2)), #8H
+                ((self.row + 1),(self.col - 2)), #10H
+                ((self.row + 2),(self.col - 1))  #11H              
+                )
 
 
 class Bishop(StraightMover):
