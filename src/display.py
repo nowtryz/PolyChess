@@ -4,10 +4,9 @@
 
 """
 
-import numpy as np
-from Config import *
-from pieces import *
-from board import *
+from Config import DISPLAY_CONF
+from colors import BLACK, WHITE
+from board import Board
 
 
 class Display:
@@ -15,7 +14,7 @@ class Display:
     The class display in the sideboard the chess board
     """
     
-    def __init__(self, board):
+    def __init__(self, board: Board):
         """Initialize the class"""
         
         self.board=board
