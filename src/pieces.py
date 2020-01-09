@@ -45,7 +45,7 @@ class Piece:
         :return: A list of coordinates the piece see
         :rtype: list of tuple
         """
-        
+
         raise NotImplementedError()
 
     def legal_moves(self):
@@ -187,22 +187,22 @@ class Pawn(Piece):
         return position in [(self.row + self.direction, self.col - 1), (self.row + self.direction, self.col + 1)]
 
 
-
 class Knight(Piece):
     """
     The knight piece
     """
 
     def all_moves(self):
-        return (((self.row + 2),(self.col + 1)), #1H
-                ((self.row + 1),(self.col + 2)), #2H
-                ((self.row - 1),(self.col + 2)), #4H
-                ((self.row - 2),(self.col + 1)), #5H
-                ((self.row - 2),(self.col - 1)), #7H
-                ((self.row - 1),(self.col - 2)), #8H
-                ((self.row + 1),(self.col - 2)), #10H
-                ((self.row + 2),(self.col - 1))  #11H              
-                )
+        return [
+            ((self.row + 2), (self.col + 1)),  # 1H
+            ((self.row + 1), (self.col + 2)),  # 2H
+            ((self.row - 1), (self.col + 2)),  # 4H
+            ((self.row - 2), (self.col + 1)),  # 5H
+            ((self.row - 2), (self.col - 1)),  # 7H
+            ((self.row - 1), (self.col - 2)),  # 8H
+            ((self.row + 1), (self.col - 2)),  # 10H
+            ((self.row + 2), (self.col - 1)),  # 11H
+        ]
 
 
 class Bishop(StraightMover):
