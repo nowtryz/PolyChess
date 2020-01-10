@@ -21,6 +21,7 @@ class Piece:
         self.position = position
         self.color = color
         self.character = character
+        self.pinned = False
         self.moves = 0
         self.last_move = 0
 
@@ -140,6 +141,31 @@ class StraightMover(Piece):
 
     def legal_moves(self):
         return self._clear_invalid_directional_moves(self.get_directions())
+
+    def pin_targets(self):
+        """
+        Explore visible targets to pin them if their are hiding a king
+        """
+        for direction in self.get_directions():
+            pinnable = None
+            for pos in direction:
+                p = self.board.grid[pos]
+                if p:
+                    # if first or second target has the same color -> cannot pin
+                    if p.color == self.color:
+                        break
+                    # if the first target has the opponent's color, it may be a pinnable piece
+                    elif pinnable is None:
+                        if isinstance(p, King):
+                            break
+                        else:
+                            pinnable = p
+                    # if the second target is a king, pin last piece
+                    elif isinstance(p, King):
+                        pinnable.pinned = True
+                    # if the second target is not a king -> cannot pin
+                    else:
+                        break
 
 
 class Pawn(Piece):
