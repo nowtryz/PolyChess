@@ -18,15 +18,13 @@ To run the project you need Python installed
 ### Installing
 
 To install the project you first need to download pip dependencies
-
 ```bash
-pip install -r requirements.txt --no-index
+python setup.py develop
 ```
 
 ### Running the tests
 
-Unit tests use *pytest* with the *unittest* engine, here how to run tests with pytest:
-
+Unit tests use `pytest` with the `unittest` engine, here how to run tests with *pytest*:
 ```
 pytest tests/
 ```
