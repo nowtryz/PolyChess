@@ -32,6 +32,7 @@ class Piece:
         :return: a position list without invalid positions
         :rtype: list of tuple
         """
+        
         moves = []
         for pos in input_moves:
             if 0 <= pos[0] < 8 and 0 <= pos[1] < 8:
@@ -55,7 +56,9 @@ class Piece:
         :return: A list of coordinates where the piece can play
         :rtype: list of tuple
         """
-
+        
+        if self.pinned:
+            return []
         return self._clear_invalid_moves(self.all_moves())
 
     def can_play_at(self, position: tuple):
@@ -331,7 +334,7 @@ class King(Piece):
     def legal_moves(self):
         return [move for move in self._clear_invalid_moves(self.all_moves()) if np.all([
             not piece.can_capture_at(move) for piece in self.board.living_pieces[self.opponent]
-            if type(piece) != 'King'
+            if type(piece) != King
         ])]
 
     def move_to(self, position):

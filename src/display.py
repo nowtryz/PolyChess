@@ -32,12 +32,12 @@ class Display:
         for l in self.board.dead_pieces[BLACK]:
                 print(l,end = ' ')
         print('\x1b[0m')
-        print('\x1b[6;39;39m' + '    A   B   C   D   E   F   G   H      ' + '\x1b[0m')
+        print('\x1b[6;39;39m' + '    A  B  C  D  E  F  G  H     ' + '\x1b[0m')
         print('\x1b[6;39;39m' + '                                       ')        
-        self.line = reversed(range(8))
+        self.line = range(8)
         self.column = range(8)
         for i in self.line:
-            print('\x1b[6;39;39m' , (i+1), end='  ')
+            print('\x1b[6;39;39m' , (8 - i), end='  ')
             for j in self.column:
                 if self.board.grid[i,j]:
                     print(self.board.grid[i,j], end='  ') 
@@ -49,7 +49,7 @@ class Display:
             print('\x1b[6;39;39m' , (i+1), end='  ')
             print('\x1b[0m')
             print('\x1b[6;39;39m' + '                                       ')
-        print('\x1b[6;39;39m' + '    A   B   C   D   E   F   G   H      ' + '\x1b[0m')
+        print('\x1b[6;39;39m' + '    A  B  C  D  E  F  G  H     ' + '\x1b[0m')
         print('\x1b[6;39;39m' + 'White dead pieces:', end=' ')
         for l in self.board.dead_pieces[WHITE]:
             print(l,end = ' ')

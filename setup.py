@@ -12,7 +12,8 @@ setup(
     include_package_data=True,
     python_requires='>=3.0',
     install_requires=[
-        'numpy>=1.16.5'
+        'numpy>=1.16.5',
+        'win-unicode-cosole>=0.5',
     ],
     extras_require={
         'rst': ['docutils>=0.11'],

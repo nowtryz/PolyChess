@@ -23,32 +23,64 @@ from colors import BLACK, WHITE
 
 DISPLAY_CONF = {
     Pawn: {
-        BLACK: '\u265F',
-        WHITE: '\u2659'
+        BLACK: '\u2659',
+        WHITE: '\u265F',
     },
     Rook: {
-        BLACK: '\u265C',
-        WHITE: '\u2656'
+        BLACK: '\u2656',
+        WHITE: '\u265C',
     },
     Knight: {
-        BLACK: '\u265E',
-        WHITE:  '\u2658'
+        BLACK:  '\u2658',
+        WHITE: '\u265E',
     },
     Bishop: {
-        BLACK: '\u265D',
-        WHITE: '\u2657'
+        BLACK: '\u2657',
+        WHITE: '\u265D',
     },
     Queen: {
-        BLACK: '\u265B',
-        WHITE: '\u2655'
+        BLACK: '\u2655',
+        WHITE: '\u265B',
     },
     King: {
-        BLACK: '\u265A',
-        WHITE: '\u2654'
+        BLACK: '\u2654',
+        WHITE: '\u265A',
     },
     "Square": {
-        BLACK: ". ",
-        WHITE: ". "
+        BLACK: ".",
+        WHITE: "."
+    }
+ }
+    
+    
+DISPLAY_CONF = {
+    Pawn: {
+        BLACK: 'p',
+        WHITE: 'P',
+    },
+    Rook: {
+        BLACK: 'r',
+        WHITE: 'R',
+    },
+    Knight: {
+        BLACK:  'n',
+        WHITE: 'N',
+    },
+    Bishop: {
+        BLACK: 'b',
+        WHITE: 'B',
+    },
+    Queen: {
+        BLACK: 'q',
+        WHITE: 'Q',
+    },
+    King: {
+        BLACK: 'k',
+        WHITE: 'K',
+    },
+    "Square": {
+        BLACK: ".",
+        WHITE: "."
     }
  }
 

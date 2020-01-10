@@ -1,15 +1,8 @@
 import unittest
 
 from colors import BLACK, WHITE
-from game import Game
-from pieces import King, Bishop, Knight
-
-
-def clean_board():
-    game = Game()
-    for color in [BLACK, WHITE]:
-        [p.die() for p in game.board.living_pieces[color].copy() if not isinstance(p, King)]
-    return game
+from pieces import Bishop, Knight
+from utils import clean_board
 
 
 class TestLackOfParts(unittest.TestCase):
@@ -23,16 +16,28 @@ class TestLackOfParts(unittest.TestCase):
         game.board.create(Bishop, (0, 0), WHITE)
         self.assertTrue(game.lack_of_pieces())
 
-    def test_lack_of_parts_king_bishop_vs_king_bishop(self):
+    def test_lack_of_parts_king_bishop_vs_king_bishop_same_color(self):
         game = clean_board()
         game.board.create(Bishop, (0, 0), WHITE)
         game.board.create(Bishop, (2, 0), BLACK)
         self.assertTrue(game.lack_of_pieces())
 
+    def test_lack_of_parts_king_bishop_vs_king_bishop_diff_color(self):
+        game = clean_board()
+        game.board.create(Bishop, (0, 0), WHITE)
+        game.board.create(Bishop, (1, 0), BLACK)
+        self.assertFalse(game.lack_of_pieces())
+
     def test_lack_of_parts_king_knight_vs_king(self):
         game = clean_board()
         game.board.create(Knight, (0, 0), WHITE)
         self.assertTrue(game.lack_of_pieces())
+
+    def test_lack_of_parts_other(self):
+        game = clean_board()
+        game.board.create(Bishop, (0, 0), WHITE)
+        game.board.create(Knight, (3, 5), WHITE)
+        self.assertFalse(game.lack_of_pieces())
 
 
 if __name__ == '__main__':

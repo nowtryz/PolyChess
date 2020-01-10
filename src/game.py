@@ -4,10 +4,12 @@ Created on Fri Dec 20 11:26:56 2019
 
 @author: szelagp
 """
+import win_unicode_console
+
 from board import Board
 from datetime import datetime
 from colors import WHITE, BLACK
-from pieces import StraightMover
+from pieces import StraightMover, King, Knight, Bishop
 from display import Display
 
 
@@ -33,7 +35,7 @@ class Game:
 
         threats=[]
 
-        for i in self.board.living_pieces[color]:
+        for i in self.board.living_pieces[opposite_color(color)]:
             if type(i) != "King":
                 if i.can_capture_at(king_pos):
                     threats=threats+[i]
@@ -45,27 +47,32 @@ class Game:
 
         :param color: the color of the king to check
         """
-        threat=self.is_check(self.player)[0]
+        threats = self.is_check(self.player)
         king=self.board.kings[color]
+        if len(threats) == 0:
+            return False
+        
         # if the king cannot move
         if len(king.legal_moves()) != 0:
             return False
 
         #a partir d ici le roi ne peut plus bouger
-        if len(self.is_check(self.player)) >= 2:
+        if len(threats) > 1:
             return True
-        # pinned pieces
 
+        # pinned pieces
+        for p in self.board.living_pieces[opposite_color(color)]:
+            if isinstance(p, StraightMover):
+                p.pin_targets()
 
         # if une piece peut se mettre sur le chemin de la menace
-        if isinstance(threat, StraightMover):
-            for i in threat.get_directions():
+        if isinstance(threats[0], StraightMover):
+            for i in threats[0].get_directions():
                 if i[len(i)-1] == king.position:
                     for j in i:
                         for h in self.board.living_pieces[color]:
                             if h.can_play_at(j):
                                 return False
-
         return True
 
     def lack_of_pieces(self):
@@ -74,25 +81,25 @@ class Game:
         :param color: the color of the actual player
         """
         lack = False
-        all_living_pieces=self.board.living_pieces[BLACK]+self.board.living_pieces[WHITE]
-        
-        for i in range(len(all_living_pieces)):
-            if type(all_living_pieces[i]) == "King":
-                del all_living_pieces[i]        
+        all_living_pieces=[
+                piece 
+                for piece in self.board.living_pieces[BLACK] + self.board.living_pieces[WHITE]
+                if not isinstance(piece, King)
+            ]
         
         #King vs King
         if len(all_living_pieces) == 0:
             lack = True
         
         #King vs King + (Knight | Bishop)
-        if len(all_living_pieces) == 1:
+        elif len(all_living_pieces) == 1:
             for i in all_living_pieces:
-                if type(i) == "Knight" or type(i) == "Bishop":
-                    lack = True
+                if type(i) == Knight or type(i) == Bishop:
+                    lack = True            
         
         #King + Bishop vs King + Bishop (bishops on the same square color)
-        if len(all_living_pieces) == 2:
-            if type(all_living_pieces[0]) == type(all_living_pieces[1]) == "Bishop":
+        elif len(all_living_pieces) == 2:
+            if type(all_living_pieces[0]) == type(all_living_pieces[1]) == Bishop:
                 if (sum(all_living_pieces[0].position) + sum(all_living_pieces[1].position)) % 2 == 0:
                     lack = True
 
@@ -106,10 +113,8 @@ class Game:
         """
         Display a summary message at the end of a game
         """
-        if self.winner == WHITE:
-            print("\nThe BLACK player won in ",self.turn," turns",'\nThe game lasted : ',(datetime.now()-self.timestamp))
-        if self.winner == BLACK:
-            print("\nThe WHITE player won in ",self.turn," turns",'\nThe game lasted : ',(datetime.now()-self.timestamp))
+        if self.winner == WHITE or self.winner == BLACK:
+            print("\nThe ",self.winner," player won in ",self.turn," turns",'\nThe game lasted : ',(datetime.now()-self.timestamp))
         if self.winner == "draw":
             print("\nThe game ended in ",self.turn," turns",'\nThe game lasted : ',(datetime.now()-self.timestamp))
 
@@ -158,24 +163,25 @@ class Game:
         else:
             piece.move_to(target)
             return True
-
+        
 
     def run(self):
         print("\nTo move a piece the format of the command is <letter><number><space><letter><number>")
         print("\nYou can abandon a game by typing : resign")
         while True:
+            print('#----------------------------------------#')
             print(f'\n{self.player}s are playing\n')
-            self.display.display_board(self.player)
+            self.display.display_board()
             if self.lack_of_pieces():
                 self.winner = "draw"
                 self.end_game()
                 break
-            '''
+            
             if self.is_checkmate():
                 self.winner = opposite_color(self.player)
                 self.end_game()
                 break
-            '''
+            
             command = input('commande:')
             if command and len(command) > 4:
                 coord_piece, coord_target, status = self.command_to_pos(command)
@@ -189,6 +195,8 @@ class Game:
                     piece = self.board.grid[coord_piece]
                     if piece:
                         if self.play_turn(piece.color, piece, coord_target):
+                            for p in self.board.living_pieces[self.player]:
+                                p.pinned = False
                             self.turn += 1
                             self.player = opposite_color(self.player)
                             
@@ -213,5 +221,6 @@ def opposite_color(color):
 
 
 if __name__ == "__main__":
+    win_unicode_console.enable()
     game = Game()
     game.run()
