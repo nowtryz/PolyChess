@@ -60,10 +60,7 @@ class Board:
 
         for i in places:
             for row, color in zip(rows, (BLACK, WHITE)):
-                pos = (row, i)
-                piece = piece_type(self, pos, color, DISPLAY_CONF[piece_type][color])
-                self.living_pieces[color].append(piece)
-                self.grid[pos] = piece
+                self.create(piece_type, (row, i), color)
 
     def _place_kings(self):
         """
@@ -76,6 +73,20 @@ class Board:
             self.living_pieces[color].append(king)
             self.grid[pos] = king
             self.kings[color] = king
+
+    def create(self, piece_type, position, color):
+        """
+        Creates a piece at a given position
+        :param piece_type: the class of the piece to create
+        :param position: the position to place the piece
+        :param color: the color of the piece, either `BLACK` or `WHITE`
+        :return: Return the created piece
+        :rtype: The type given in parameter
+        """
+        piece = piece_type(self, position, color, DISPLAY_CONF[piece_type][color])
+        self.living_pieces[color].append(piece)
+        self.grid[position] = piece
+        return piece
 
     def piece_died(self, piece: Piece):
         """Notify the board that a piece died
