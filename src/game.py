@@ -21,7 +21,7 @@ class Game:
         self.timestamp = datetime.now()
         self.player = WHITE
         self.turn = 0
-        self.end = False
+        self.winner = None
 
     def is_check(self, color):
         """
@@ -68,32 +68,36 @@ class Game:
 
         return True
 
-    def lack_of_pieces(self, color):
+    def lack_of_pieces(self):
         """
 
         :param color: the color of the actual player
         """
         lack = False
+        all_living_pieces=self.board.living_pieces[BLACK]+self.board.living_pieces[WHITE]
+        
+        for i in range(len(all_living_pieces)):
+            if type(all_living_pieces[i]) == "King":
+                del all_living_pieces[i]        
+        
         #King vs King
-        if len(self.board.living_pieces[color]) == len(self.board.living_pieces[opposite_color(color)]) == 1:
+        if len(all_living_pieces) == 0:
             lack = True
+        
         #King vs King + (Knight | Bishop)
-        elif len(self.board.living_pieces[color]) == 0:
-            if len(self.board.living_pieces[opposite_color(color)]) == 1:
-                if type(self.board.living_pieces[opposite_color(color)][0]) == "Knight":
+        if len(all_living_pieces) == 1:
+            for i in all_living_pieces:
+                if type(i) == "Knight" or type(i) == "Bishop":
                     lack = True
-                if type(self.board.living_pieces[opposite_color(color)][0]) == "Bishop":
-                    lack = True
+        
         #King + Bishop vs King + Bishop (bishops on the same square color)
-        elif len(self.board.living_pieces[color]) == len(self.board.living_pieces[opposite_color(color)]) == 1:
-            if type(self.board.living_pieces[color][0]) == type(self.board.living_pieces[opposite_color(color)][0]) == "Bishop":
-                b1 = self.board.living_pieces[color][0].position[0] + self.board.living_pieces[color][0].position[1]
-                b2 = self.board.living_pieces[opposite_color(color)][0].position[0] + self.board.living_pieces[opposite_color(color)][0].position[1]
-                if (b1 + b2) % 2 == 0:
+        if len(all_living_pieces) == 2:
+            if type(all_living_pieces[0]) == type(all_living_pieces[1]) == "Bishop":
+                if (sum(all_living_pieces[0].position) + sum(all_living_pieces[1].position)) % 2 == 0:
                     lack = True
 
         if lack:
-            print("Draw due to lack of pieces")
+            print("\nDraw due to lack of pieces")
             return True
 
         return False
@@ -102,10 +106,12 @@ class Game:
         """
         Display a summary message at the end of a game
         """
-        if self.end==True and self.player==WHITE:
-            return ("The BLACK player won in ",self.turn," turns",'\n the game lasted : ',(datetime.now()-self.timestamp).strftime("%H:%M:%S"))
-        if self.end==True and self.player==BLACK:
-            return ("The WHITE player won in ",self.turn," turns",'\n the game lasted : ',(datetime.now()-self.timestamp).strftime("%H:%M:%S"))
+        if self.winner == WHITE:
+            print("\nThe BLACK player won in ",self.turn," turns",'\nThe game lasted : ',(datetime.now()-self.timestamp))
+        if self.winner == BLACK:
+            print("\nThe WHITE player won in ",self.turn," turns",'\nThe game lasted : ',(datetime.now()-self.timestamp))
+        if self.winner == "draw":
+            print("\nThe game ended in ",self.turn," turns",'\nThe game lasted : ',(datetime.now()-self.timestamp))
 
     def command_to_pos(self, command):
         """
@@ -113,8 +119,11 @@ class Game:
         :param command: the input of the player
         """
         if command == "break":
-            return None, None, True
-
+            return None, None, "break"
+        
+        if command == "resign":
+            return None, None, "resign"
+        
         piece = target = None
         if 64 < ord(command[0]) < 73:
             piece = 8 - int(command[1]), ord(command[0])-65
@@ -127,8 +136,8 @@ class Game:
 
         if 96 < ord(command[3]) < 105:
             target = 8 - int(command[4]), ord(command[3])-97
-
-        return piece, target, False
+        
+        return piece, target, None
 
     def play_turn(self,color, piece, target):
         """
@@ -152,16 +161,29 @@ class Game:
 
 
     def run(self):
-
+        print("\nTo move a piece the format of the command is <letter><number><space><letter><number>")
+        print("\nYou can abandon a game by typing : resign")
         while True:
-            print(f'{self.player}s are playing')
+            print(f'\n{self.player}s are playing\n')
             self.display.display_board(self.player)
-            if self.lack_of_pieces(self.player):
+            if self.lack_of_pieces():
+                self.winner = "draw"
+                self.end_game()
                 break
+            '''
+            if self.is_checkmate():
+                self.winner = opposite_color(self.player)
+                self.end_game()
+                break
+            '''
             command = input('commande:')
             if command and len(command) > 4:
-                coord_piece, coord_target, _break = self.command_to_pos(command)
-                if _break:
+                coord_piece, coord_target, status = self.command_to_pos(command)
+                if status == "break":
+                    break
+                elif status == "resign":
+                    self.winner=opposite_color(self.player)
+                    self.end_game()
                     break
                 if coord_piece and coord_target:
                     piece = self.board.grid[coord_piece]
@@ -169,8 +191,8 @@ class Game:
                         if self.play_turn(piece.color, piece, coord_target):
                             self.turn += 1
                             self.player = opposite_color(self.player)
-
-                        if self.end:
+                            
+                        if self.winner != None:
                             self.end_game()
                             break
                     else:
@@ -182,8 +204,8 @@ class Game:
 
 def opposite_color(color):
         """
-        Give the color of the opponent
-        :return: the color of the opponent
+        Give the opposite color
+        :return: the opposite color 
         """
         if color == WHITE:
             return BLACK
