@@ -23,6 +23,15 @@ To install the project you first need to download pip dependencies
 pip install -r requirements.txt --no-index
 ```
 
+### Running the tests
+
+Unit tests use *pytest* with the *unittest* engine, here how to run tests with pytest:
+
+```
+pytest tests/
+```
+
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.

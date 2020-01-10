@@ -42,7 +42,7 @@ class Game:
 
     def is_checkmate(self, color):
         """
-        
+
         :param color: the color of the king to check
         """
         threat=self.is_check(self.player)[0]
@@ -50,12 +50,12 @@ class Game:
         # if the king cannot move
         if len(king.legal_moves()) != 0:
             return False
-        
+
         #a partir d ici le roi ne peut plus bouger
         if len(self.is_check(self.player)) >= 2:
             return True
         # pinned pieces
-        
+
 
         # if une piece peut se mettre sur le chemin de la menace
         if isinstance(threat, StraightMover):
@@ -65,39 +65,39 @@ class Game:
                         for h in self.board.living_pieces[color]:
                             if h.can_play_at(j):
                                 return False
-        
+
         return True
 
     def lack_of_pieces(self, color):
         """
-        
+
         :param color: the color of the actual player
         """
         lack = False
         #King vs King
-        if len(self.board.living_pieces[color]) == len(self.board.living_pieces[opposite_color(color)]) == 0:
+        if len(self.board.living_pieces[color]) == len(self.board.living_pieces[opposite_color(color)]) == 1:
             lack = True
         #King vs King + (Knight | Bishop)
-        if len(self.board.living_pieces[color]) == 0:
+        elif len(self.board.living_pieces[color]) == 0:
             if len(self.board.living_pieces[opposite_color(color)]) == 1:
                 if type(self.board.living_pieces[opposite_color(color)][0]) == "Knight":
                     lack = True
                 if type(self.board.living_pieces[opposite_color(color)][0]) == "Bishop":
                     lack = True
         #King + Bishop vs King + Bishop (bishops on the same square color)
-        if len(self.board.living_pieces[color]) == len(self.board.living_pieces[opposite_color(color)]) == 1:
+        elif len(self.board.living_pieces[color]) == len(self.board.living_pieces[opposite_color(color)]) == 1:
             if type(self.board.living_pieces[color][0]) == type(self.board.living_pieces[opposite_color(color)][0]) == "Bishop":
                 b1 = self.board.living_pieces[color][0].position[0] + self.board.living_pieces[color][0].position[1]
                 b2 = self.board.living_pieces[opposite_color(color)][0].position[0] + self.board.living_pieces[opposite_color(color)][0].position[1]
                 if (b1 + b2) % 2 == 0:
                     lack = True
-        
+
         if lack:
             print("Draw due to lack of pieces")
             return True
-        
+
         return False
-                
+
     def end_game(self):
         """
         Display a summary message at the end of a game
@@ -114,7 +114,7 @@ class Game:
         """
         if command == "break":
             return None, None, True
-        
+
         piece = target = None
         if 64 < ord(command[0]) < 73:
             piece = 8 - int(command[1]), ord(command[0])-65
@@ -127,7 +127,7 @@ class Game:
 
         if 96 < ord(command[3]) < 105:
             target = 8 - int(command[4]), ord(command[3])-97
-        
+
         return piece, target, False
 
     def play_turn(self,color, piece, target):
@@ -169,7 +169,7 @@ class Game:
                         if self.play_turn(piece.color, piece, coord_target):
                             self.turn += 1
                             self.player = opposite_color(self.player)
-                            
+
                         if self.end:
                             self.end_game()
                             break
