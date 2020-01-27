@@ -51,8 +51,8 @@ DISPLAY_CONF = {
         WHITE: "."
     }
  }
-    
-    
+
+"""    
 DISPLAY_CONF = {
     Pawn: {
         BLACK: 'p',
@@ -83,11 +83,4 @@ DISPLAY_CONF = {
         WHITE: "."
     }
  }
-
-
-
-
-
-
-
-
+"""

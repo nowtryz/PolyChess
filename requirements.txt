@@ -1,2 +1,2 @@
 numpy>=1.16.5
-win-unicode-cosole>=0.5
+pytest>=5.2.1
