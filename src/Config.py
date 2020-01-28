@@ -31,7 +31,7 @@ DISPLAY_CONF = {
         WHITE: '\u265C',
     },
     Knight: {
-        BLACK:  '\u2658',
+        BLACK: '\u2658',
         WHITE: '\u265E',
     },
     Bishop: {
@@ -50,37 +50,46 @@ DISPLAY_CONF = {
         BLACK: ".",
         WHITE: "."
     }
- }
+}
 
-"""    
-DISPLAY_CONF = {
-    Pawn: {
-        BLACK: 'p',
-        WHITE: 'P',
-    },
-    Rook: {
-        BLACK: 'r',
-        WHITE: 'R',
-    },
-    Knight: {
-        BLACK:  'n',
-        WHITE: 'N',
-    },
-    Bishop: {
-        BLACK: 'b',
-        WHITE: 'B',
-    },
-    Queen: {
-        BLACK: 'q',
-        WHITE: 'Q',
-    },
-    King: {
-        BLACK: 'k',
-        WHITE: 'K',
-    },
-    "Square": {
-        BLACK: ".",
-        WHITE: "."
+
+def disable_utf8():
+    global DISPLAY_CONF
+    DISPLAY_CONF = {
+        Pawn: {
+            BLACK: 'p',
+            WHITE: 'P',
+        },
+        Rook: {
+            BLACK: 'r',
+            WHITE: 'R',
+        },
+        Knight: {
+            BLACK: 'n',
+            WHITE: 'N',
+        },
+        Bishop: {
+            BLACK: 'b',
+            WHITE: 'B',
+        },
+        Queen: {
+            BLACK: 'q',
+            WHITE: 'Q',
+        },
+        King: {
+            BLACK: 'k',
+            WHITE: 'K',
+        },
+        "Square": {
+            BLACK: ".",
+            WHITE: "."
+        }
     }
- }
-"""
+
+
+def get_conf():
+    """
+    Getter to access the configuration, even if it have been modified by disable_utf8
+    :return: the configuration
+    """
+    return DISPLAY_CONF

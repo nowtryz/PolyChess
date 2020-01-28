@@ -4,9 +4,9 @@
 
 """
 
-from Config import DISPLAY_CONF
-from colors import BLACK, WHITE
+from Config import get_conf
 from board import Board
+from colors import BLACK, WHITE
 
 
 def display_board(board: Board):
@@ -23,12 +23,12 @@ def display_board(board: Board):
         print('\x1b[6;39;39m', 8-i, end='  ')
         for j in range(8):
             if board.grid[i, j]:
-                print(board.grid[i,j], end='  ')
+                print(board.grid[i, j], end='  ')
             else:
                 if j != 7:
-                    print(DISPLAY_CONF["Square"][WHITE], end='  ')
+                    print(get_conf()["Square"][WHITE], end='  ')
                 else:
-                    print(DISPLAY_CONF["Square"][WHITE], end=' ')
+                    print(get_conf()["Square"][WHITE], end=' ')
         print('\x1b[6;39;39m', 8-i, end='  ')
         print('\x1b[6;39;39m' + '                                       ')
     print('\x1b[6;39;39m' + '    A  B  C  D  E  F  G  H     ' + '\x1b[0m')

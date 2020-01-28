@@ -4,12 +4,14 @@ Created on Fri Dec 20 11:26:56 2019
 
 @author: szelagp
 """
-
-from board import Board
+from argparse import ArgumentParser
 from datetime import datetime
+
+from Config import disable_utf8
+from board import Board
 from colors import WHITE, BLACK
-from pieces import StraightMover, King, Knight, Bishop
 from display import display_board
+from pieces import StraightMover, King, Knight, Bishop
 
 
 class Game:
@@ -226,5 +228,13 @@ def opposite_color(color):
 
 
 if __name__ == "__main__":
+    parser = ArgumentParser(prog="PolyChess", description="A chess game in coded in python")
+    parser.add_argument("--no-utf8", "-n", action='store_true', help="disable chess characters and replace them with "
+                                                                     "letters, for terminal that doesn't support "
+                                                                     "latest unicode characters")
+    args = parser.parse_args()
+    if args.no_utf8:
+        disable_utf8()
+
     game = Game()
     game.run()
