@@ -9,27 +9,38 @@ A road map is available on [Trello](https://trello.com/b/OtqxmBID/polychess).
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing
+purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-To run the project you need Python installed
+To run the project you need Python installed and a terminal that support last utf8 characters, especially chess
+characters
 
 ### Installing
 
 To install the project you first need to download pip dependencies
-
 ```bash
-pip install -r requirements.txt --no-index
+python setup.py develop
 ```
+
+### Running the tests
+
+Unit tests use `pytest` with the `unittest` engine, here how to run tests with *pytest*:
+```
+pytest
+```
+
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull
+requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
+[tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
 

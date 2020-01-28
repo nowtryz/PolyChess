@@ -2,8 +2,8 @@ from typing import Dict, List, Any
 
 import numpy as np
 
+from Config import get_conf
 from colors import WHITE, BLACK
-from Config import DISPLAY_CONF
 from pieces import Piece, Pawn, Rook, Bishop, Knight, Queen, King
 
 
@@ -69,7 +69,7 @@ class Board:
 
         for row, color in zip((0, 7), (BLACK, WHITE)):
             pos = (row, 4)
-            king = King(self, pos, color, DISPLAY_CONF[King][color])
+            king = King(self, pos, color, get_conf()[King][color])
             self.living_pieces[color].append(king)
             self.grid[pos] = king
             self.kings[color] = king
@@ -83,7 +83,7 @@ class Board:
         :return: Return the created piece
         :rtype: The type given in parameter
         """
-        piece = piece_type(self, position, color, DISPLAY_CONF[piece_type][color])
+        piece = piece_type(self, position, color, get_conf()[piece_type][color])
         self.living_pieces[color].append(piece)
         self.grid[position] = piece
         return piece
@@ -114,3 +114,19 @@ class Board:
         self.grid[piece.position] = None
         self.grid[new_position] = piece
         piece.position = new_position
+
+    def __getitem__(self, position):
+        """
+        Get a piece from the grid
+        :param position: the coordinates of the item on the grid
+        :return: the item at the specified position
+        """
+        return self.grid[position]
+
+    def __setitem__(self, position, piece):
+        """
+        Set the piece at the specified position of the grid
+        :param position: the position on the grid
+        :param piece: the piece to put instead
+        """
+        self.grid[position] = piece

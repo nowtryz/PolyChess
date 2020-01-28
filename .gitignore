@@ -16,6 +16,9 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.eggs/
+*.egg-info/
+
 
 # Sphinx documentation
 docs/_build/

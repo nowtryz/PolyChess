@@ -32,6 +32,7 @@ class Piece:
         :return: a position list without invalid positions
         :rtype: list of tuple
         """
+
         moves = []
         for pos in input_moves:
             if 0 <= pos[0] < 8 and 0 <= pos[1] < 8:
@@ -46,7 +47,7 @@ class Piece:
         :return: A list of coordinates the piece see
         :rtype: list of tuple
         """
-        
+
         raise NotImplementedError()
 
     def legal_moves(self):
@@ -56,6 +57,8 @@ class Piece:
         :rtype: list of tuple
         """
 
+        if self.pinned:
+            return []
         return self._clear_invalid_moves(self.all_moves())
 
     def can_play_at(self, position: tuple):
@@ -213,22 +216,22 @@ class Pawn(Piece):
         return position in [(self.row + self.direction, self.col - 1), (self.row + self.direction, self.col + 1)]
 
 
-
 class Knight(Piece):
     """
     The knight piece
     """
 
     def all_moves(self):
-        return (((self.row + 2),(self.col + 1)), #1H
-                ((self.row + 1),(self.col + 2)), #2H
-                ((self.row - 1),(self.col + 2)), #4H
-                ((self.row - 2),(self.col + 1)), #5H
-                ((self.row - 2),(self.col - 1)), #7H
-                ((self.row - 1),(self.col - 2)), #8H
-                ((self.row + 1),(self.col - 2)), #10H
-                ((self.row + 2),(self.col - 1))  #11H              
-                )
+        return [
+            ((self.row + 2), (self.col + 1)),  # 1H
+            ((self.row + 1), (self.col + 2)),  # 2H
+            ((self.row - 1), (self.col + 2)),  # 4H
+            ((self.row - 2), (self.col + 1)),  # 5H
+            ((self.row - 2), (self.col - 1)),  # 7H
+            ((self.row - 1), (self.col - 2)),  # 8H
+            ((self.row + 1), (self.col - 2)),  # 10H
+            ((self.row + 2), (self.col - 1)),  # 11H
+        ]
 
 
 class Bishop(StraightMover):
@@ -238,10 +241,10 @@ class Bishop(StraightMover):
 
     def get_directions(self):
         return (
-            zip(reversed(range(0, self.row)), reversed(range(0, self.col))),  # top left
-            zip(reversed(range(0, self.row)), range(self.col + 1, 8)),  # top right
-            zip(range(self.row + 1, 8), range(self.col + 1, 8)),  # bottom right
-            zip(range(self.row + 1, 8), reversed(range(0, self.col))),  # bottom left
+            list(zip(reversed(range(0, self.row)), reversed(range(0, self.col)))),  # top left
+            list(zip(reversed(range(0, self.row)), range(self.col + 1, 8))),  # top right
+            list(zip(range(self.row + 1, 8), range(self.col + 1, 8))),  # bottom right
+            list(zip(range(self.row + 1, 8), reversed(range(0, self.col)))),  # bottom left
         )
 
 
@@ -266,13 +269,13 @@ class Queen(StraightMover):
 
     def get_directions(self):
         return (
-            zip(reversed(range(0, self.row)), reversed(range(0, self.col))),  # top left
+            list(zip(reversed(range(0, self.row)), reversed(range(0, self.col)))),  # top left
             [(row, self.col) for row in reversed(range(0, self.row))],  # top
-            zip(reversed(range(0, self.row)), range(self.col + 1, 8)),  # top right
+            list(zip(reversed(range(0, self.row)), range(self.col + 1, 8))),  # top right
             [(self.row, col) for col in range(self.col + 1, 8)],  # right
-            zip(range(self.row + 1, 8), range(self.col + 1, 8)),  # bottom right
+            list(zip(range(self.row + 1, 8), range(self.col + 1, 8))),  # bottom right
             [(row, self.col) for row in range(self.row + 1, 8)],  # bottom
-            zip(range(self.row + 1, 8), reversed(range(0, self.col))),  # bottom left
+            list(zip(range(self.row + 1, 8), reversed(range(0, self.col)))),  # bottom left
             [(self.row, col) for col in reversed(range(0, self.col))],  # left
         )
 
@@ -329,10 +332,26 @@ class King(Piece):
         return moves
 
     def legal_moves(self):
-        return [move for move in self._clear_invalid_moves(self.all_moves()) if np.all([
-            not piece.can_capture_at(move) for piece in self.board.living_pieces[self.opponent]
-            if type(piece) != 'King'
-        ])]
+        self.board[self.position] = None
+        moves = []
+        for move in self._clear_invalid_moves(self.all_moves()):
+            threats = []
+            target = self.board[move]
+            self.board[move] = None
+            for piece in self.board.living_pieces[self.opponent]:
+                if type(piece) != King:
+                    can_capture = piece.can_capture_at(move)
+                    if can_capture:
+                        threats.append(piece)
+                else:
+                    if move in piece.all_moves():
+                        threats.append(piece)
+            if len(threats) == 0:
+                moves.append(move)
+            self.board[move] = target
+
+        self.board[self.position] = self
+        return moves
 
     def move_to(self, position):
         """
