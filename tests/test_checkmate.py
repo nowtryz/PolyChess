@@ -12,7 +12,7 @@ class TestCheckmate(unittest.TestCase):
         game = clean_board()
         game.board.create(Rook, (0, 1), WHITE)
         game.board.create(Rook, (1, 0), WHITE)
-        game.display.display_board()
+        game.display()
         game.player = BLACK
         self.assertTrue(game.is_checkmate())
 
@@ -21,7 +21,7 @@ class TestCheckmate(unittest.TestCase):
         game.board.kings[WHITE].move_to((2, 2))
         game.board.kings[BLACK].move_to((0, 0))
         game.board.create(Queen, (1, 1), WHITE)
-        game.display.display_board()
+        game.display()
         game.player = BLACK
         self.assertTrue(game.is_checkmate())
 
@@ -32,7 +32,7 @@ class TestCheckmate(unittest.TestCase):
         game.board.grid[6,4].move_to((4, 4))
         game.board.grid[7,5].move_to((4, 2))
         game.board.grid[7,3].move_to((1, 5))
-        game.display.display_board()
+        game.display()
         game.player = BLACK
         self.assertTrue(game.is_checkmate())
 

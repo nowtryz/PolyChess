@@ -9,7 +9,7 @@ from board import Board
 from datetime import datetime
 from colors import WHITE, BLACK
 from pieces import StraightMover, King, Knight, Bishop
-from display import Display
+from display import display_board
 
 
 class Game:
@@ -18,11 +18,13 @@ class Game:
         Initialise the Game
         """
         self.board = Board(self)
-        self.display = Display(self.board)
         self.timestamp = datetime.now()
         self.player = WHITE
         self.turn = 0
         self.winner = None
+
+    def display(self):
+        display_board(self.board)
 
     def is_check(self, color):
         """
@@ -170,7 +172,7 @@ class Game:
         while True:
             print('#----------------------------------------#')
             print(f'\n{self.player}s are playing\n')
-            self.display.display_board()
+            self.display()
             if self.lack_of_pieces():
                 self.winner = "draw"
                 self.end_game()
@@ -202,7 +204,7 @@ class Game:
                                 piece.pinned = False
                             self.player = opposite_color(self.player)
 
-                        if self.winner != None:
+                        if self.winner is not None:
                             self.end_game()
                             break
                     else:
