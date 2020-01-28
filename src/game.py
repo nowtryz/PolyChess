@@ -4,7 +4,6 @@ Created on Fri Dec 20 11:26:56 2019
 
 @author: szelagp
 """
-import win_unicode_console
 
 from board import Board
 from datetime import datetime
@@ -31,73 +30,73 @@ class Game:
         if there is not a check the value None remain in the check parameter
         :param color: the color of the king to check
         """
-        king_pos=self.board.kings[color].position
+        king_pos = self.board.kings[color].position
 
-        threats=[]
+        threats = []
 
         for i in self.board.living_pieces[opposite_color(color)]:
-            if type(i) != "King":
+            if type(i) != King:
                 if i.can_capture_at(king_pos):
-                    threats=threats+[i]
+                    threats = threats+[i]
 
         return threats
 
-    def is_checkmate(self, color):
+    def is_checkmate(self):
         """
 
-        :param color: the color of the king to check
         """
         threats = self.is_check(self.player)
-        king=self.board.kings[color]
+        king = self.board.kings[self.player]
         if len(threats) == 0:
             return False
-        
+
         # if the king cannot move
         if len(king.legal_moves()) != 0:
             return False
 
-        #a partir d ici le roi ne peut plus bouger
+        #  a partir d ici le roi ne peut plus bouger
         if len(threats) > 1:
             return True
 
         # pinned pieces
-        for p in self.board.living_pieces[opposite_color(color)]:
+        for p in self.board.living_pieces[opposite_color(self.player)]:
             if isinstance(p, StraightMover):
                 p.pin_targets()
 
         # if une piece peut se mettre sur le chemin de la menace
         if isinstance(threats[0], StraightMover):
-            for i in threats[0].get_directions():
-                if i[len(i)-1] == king.position:
-                    for j in i:
-                        for h in self.board.living_pieces[color]:
-                            if h.can_play_at(j):
+            directions = threats[0].get_directions()
+            for direction in directions:
+                if king.position in direction:
+                    counters = direction[:direction.index(king.position)]
+                    for position in counters:
+                        for piece in self.board.living_pieces[self.player]:
+                            if piece.can_play_at(position):
                                 return False
         return True
 
     def lack_of_pieces(self):
         """
 
-        :param color: the color of the actual player
         """
         lack = False
-        all_living_pieces=[
-                piece 
+        all_living_pieces = [
+                piece
                 for piece in self.board.living_pieces[BLACK] + self.board.living_pieces[WHITE]
                 if not isinstance(piece, King)
             ]
-        
-        #King vs King
+
+        # King vs King
         if len(all_living_pieces) == 0:
             lack = True
-        
-        #King vs King + (Knight | Bishop)
+
+        # King vs King + (Knight | Bishop)
         elif len(all_living_pieces) == 1:
             for i in all_living_pieces:
                 if type(i) == Knight or type(i) == Bishop:
-                    lack = True            
-        
-        #King + Bishop vs King + Bishop (bishops on the same square color)
+                    lack = True
+
+        # King + Bishop vs King + Bishop (bishops on the same square color)
         elif len(all_living_pieces) == 2:
             if type(all_living_pieces[0]) == type(all_living_pieces[1]) == Bishop:
                 if (sum(all_living_pieces[0].position) + sum(all_living_pieces[1].position)) % 2 == 0:
@@ -125,10 +124,10 @@ class Game:
         """
         if command == "break":
             return None, None, "break"
-        
+
         if command == "resign":
             return None, None, "resign"
-        
+
         piece = target = None
         if 64 < ord(command[0]) < 73:
             piece = 8 - int(command[1]), ord(command[0])-65
@@ -141,7 +140,7 @@ class Game:
 
         if 96 < ord(command[3]) < 105:
             target = 8 - int(command[4]), ord(command[3])-97
-        
+
         return piece, target, None
 
     def play_turn(self,color, piece, target):
@@ -163,7 +162,7 @@ class Game:
         else:
             piece.move_to(target)
             return True
-        
+
 
     def run(self):
         print("\nTo move a piece the format of the command is <letter><number><space><letter><number>")
@@ -176,12 +175,12 @@ class Game:
                 self.winner = "draw"
                 self.end_game()
                 break
-            
+
             if self.is_checkmate():
                 self.winner = opposite_color(self.player)
                 self.end_game()
                 break
-            
+
             command = input('commande:')
             if command and len(command) > 4:
                 coord_piece, coord_target, status = self.command_to_pos(command)
@@ -198,8 +197,11 @@ class Game:
                             for p in self.board.living_pieces[self.player]:
                                 p.pinned = False
                             self.turn += 1
+                            #  Unpin pieces
+                            for piece in self.board.living_pieces[self.player]:
+                                piece.pinned = False
                             self.player = opposite_color(self.player)
-                            
+
                         if self.winner != None:
                             self.end_game()
                             break
@@ -210,17 +212,17 @@ class Game:
             else:
                 print("The command is invalid !")
 
+
 def opposite_color(color):
-        """
-        Give the opposite color
-        :return: the opposite color 
-        """
-        if color == WHITE:
-            return BLACK
-        return WHITE
+    """
+    Give the opposite color
+    :return: the opposite color
+    """
+    if color == WHITE:
+        return BLACK
+    return WHITE
 
 
 if __name__ == "__main__":
-    win_unicode_console.enable()
     game = Game()
     game.run()

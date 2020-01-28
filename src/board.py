@@ -114,3 +114,19 @@ class Board:
         self.grid[piece.position] = None
         self.grid[new_position] = piece
         piece.position = new_position
+
+    def __getitem__(self, position):
+        """
+        Get a piece from the grid
+        :param position: the coordinates of the item on the grid
+        :return: the item at the specified position
+        """
+        return self.grid[position]
+
+    def __setitem__(self, position, piece):
+        """
+        Set the piece at the specified position of the grid
+        :param position: the position on the grid
+        :param piece: the piece to put instead
+        """
+        self.grid[position] = piece
