@@ -10,27 +10,33 @@ A road map is available on [Trello](https://trello.com/b/OtqxmBID/polychess).
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing
-purposes. See deployment for notes on how to deploy the project on a live system.
+purposes. If you just want to play the game, just follow the
+[doc's instructions to play the game](docs/how-to-play/README.md)
 
 ### Prerequisites
 
-To run the project you need Python installed and a terminal that support last utf8 characters, especially chess
-characters
+To run the project you need Python *(3.6 or higher)* installed and, if possible, a terminal that support last utf8
+characters, especially chess characters.
 
 ### Installing
 
-To install the project you first need to download pip dependencies
-```bash
-python setup.py develop
-```
+ - To install the project you first need to download the project:
+    ```shell script
+    git clone git@github.com:nowtryz/PolyChess.git
+    ```
+ - Then you can install pip dependencies and the project to your machine:
+    ```shell script
+    python setup.py develop
+    ```
 
 ### Running the tests
 
 Unit tests use `pytest` with the `unittest` engine, here how to run tests with *pytest*:
-```
+```shell script
 pytest
 ```
 
+### Running the game
 
 ## Contributing
 

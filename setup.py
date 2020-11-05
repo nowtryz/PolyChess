@@ -27,13 +27,18 @@ if version_info < required_py:
 
 setup(
     name='polychess',
+    entry_points={
+        'console_scripts': [
+            'polychess = game:main',
+        ],
+    },
     author='Roshan Nepaul, Pierre Szelag, Hugo Morange-Gapihan, Damien Djomby',
     url='https://github.com/nowtryz/PolyChess',
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
-    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    packages=find_packages('polychess'),
+    package_dir={'': 'polychess'},
+    py_modules=[splitext(basename(path))[0] for path in glob('polychess/*.py')],
     include_package_data=True,
-    python_requires='>=%s,%s' % required_py,
+    python_requires='>=%d.%d' % required_py[:2],
     install_requires=read_lines('requirements.txt'),
     setup_requires=[
         'pytest-runner',

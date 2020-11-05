@@ -227,7 +227,7 @@ def opposite_color(color):
     return WHITE
 
 
-if __name__ == "__main__":
+def main():
     parser = ArgumentParser(prog="PolyChess", description="A chess game in coded in python")
     parser.add_argument("--no-utf8", "-n", action='store_true', help="disable chess characters and replace them with "
                                                                      "letters, for terminal that doesn't support "
@@ -238,3 +238,7 @@ if __name__ == "__main__":
 
     game = Game()
     game.run()
+
+
+if __name__ == "__main__":
+    main()
